@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+  <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/lib/p5.min.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/lib/p5.dom.min.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/lib/numjs.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/lib/sketch_rnn.js"></script>
+
+  <script language="javascript" type="text/javascript" src="/static/js/teacher.js"></script>
+  <link rel="stylesheet" type="text/css" href="/static/lib/teacher.css"> 
+</head>
+<body>
+<div id= "container">
+  <form action="" method="get"> 
+    最想学的动物绘画？<br /><br /> 
+    <label><input name="Fruit" type="radio" value="flower" onclick="getValue(this.value)" />Flower </label> 
+    <label><input name="Fruit" type="radio" value="cat" onclick="getValue(this.value)"/>Cat </label> 
+    <label><input name="Fruit" type="radio" value="airplane" onclick="getValue(this.value)"/>Airplane </label> 
+    <label><input name="Fruit" type="radio" value="test"checked="true" onclick="getValue(this.value)"/>Test </label> 
+  </form>
+  <div id="select">
+      <label id = "color">画笔颜色：</label>
+      <label id = "size">画笔宽度：</label>
+  </div>
+  <div id = "button"></div>
+  <div id = "sketch"></div>
+ </div>
+</body>
+</html>
+{% endblock %}

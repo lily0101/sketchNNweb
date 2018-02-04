@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content%}
+    <div>
+        {% for url in all_url %}
+        <image src="{{url[0]}}" alt = "student drawing!" title="{{url[1]}}"></image>
+        <!--when you move your mouse to the picture,the score will show-->
+        {% endfor %}
+    </div>
+{% endblock %}
