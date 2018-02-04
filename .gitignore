@@ -48,7 +48,6 @@ log/
 migrations/
 flask/
 app/SketchModel/
-app/static/images/
 app/static/data/
 venv/
 *.pyc
