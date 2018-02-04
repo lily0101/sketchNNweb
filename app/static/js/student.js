@@ -3,28 +3,74 @@
 */
 var color_list = ['red','blue','yellow','black','green']
 var size_list = ['1','2','4','8','16']
-var model_list = ['flower',
+var small_class_list = ['flower',
     'dog',
     'test',
     'airplane'];
+
+var large_class_list = ['flower',
+    'dog',
+    'test',
+    'airplane'];
+var class_list = ['bird', //this for sketchRNN
+    'ant',
+    'angel',
+    'bee',
+    'bicycle',
+    'flamingo',
+    'flower',
+    'mosquito',
+    'owl',
+    'spider',
+    'yoga',
+    'cat'];
+var use_large_models = true;
+var class_list = small_class_list;
+
+if (use_large_models) {
+    class_list = large_class_list;
+}
+
+//sketch RNN model
+var model;
+var model_selected;
+var selected_model = false
+var model_data;
+var temperature = 0.25;
+var min_sequence_length = 5;
+
+var model_pdf; // store all the parameters of a mixture-density distribution
+var model_state, model_state_orig;
+var model_prev_pen;
+var model_dx, model_dy;
+var model_pen_down, model_pen_up, model_pen_end;
+var model_x, model_y;
+var model_is_active;
+var screen_scale_factor = 5.0;
+var gen = false;
+var gen_button;
+var predict_line_color;
+
 var scoreMessage = ["小朋友，还需继续努力哦！！",
 "画的还不错呢！已经超过了60%的小伙伴了哦！",
 "你真棒！你的绘画能力很不错哦！",
 "perfect! 你已经完全掌握了绘画技能哦！"
 ]
 // variables we need for this demo
+//student's start
 var dx, dy; // offsets of the pen strokes, in pixels
 var pen = 0;
 var prev_pen = 1;
 var x, y; // absolute coordinates on the screen of where the pen is，鼠标的绝对坐标
 var start_x, start_y;
 
-var startTime,endTime,delayTime;
+var timeStart,timeEnd,delayTime;
 
 var has_started = false; // set to true after user starts writing.
 var just_finished_line = false;
 var epsilon = 2.0; // to ignore data from user's pen staying in one spot.
 var line_color = "red";
+var raw_line_color = "red"
 var line_width = 3.0;
 
 var screen_width, screen_height; // stores the browser's dimensions
@@ -40,15 +86,12 @@ var stroke;
 
 var last_point, idx;
 
-var line_color;
-
 //dom
 var submit_button;
 var teach_button;
 var draw_button;
 var color_sel;
 var size_sel;
-var model_sel;
 var teach_canvas;
 var draw_canvas;
 var message;
@@ -79,64 +122,6 @@ var teach = function(p){
 　　　　　　} 
 　　　　}
 　　　　return ""
-  };
-
-  var draw_example_teach = function(example, start_x, start_y, line_color, line_thickness) {
-    var i;
-    var x=start_x, y=start_y;
-    var dx,dy;
-    var pen_down, pen_up, pen_end;
-    var prev_pen = [1, 0, 0];   //start 
-    var the_line_thickness = 1.0;
-    console.log(start_x,start_y);
-    if (typeof line_thickness === "number") {
-      the_line_thickness = line_thickness;
-    } 
-    for(i=0;i<example.length;i++) {
-      // sample the next pen's states from our probability distribution
-      [dx, dy, pen_down, pen_up, pen_end] = example[i];
-
-      if (prev_pen[2] == 1) { // end of drawing.[0,0,1]
-        break;
-      }
-
-      // only draw on the paper if the pen is touching the paper
-      if (prev_pen[0] == 1) {
-        p.stroke(line_color);
-        p.strokeWeight(line_width);
-        p.line(x, y, x+dx, y+dy); // draw line connecting prev point to current point.
-      }
-
-      // update the absolute coordinates from the offsets
-      x += dx;
-      y += dy;
-
-      // update the previous pen's state to the current one we just sampled
-      prev_pen = [pen_down, pen_up, pen_end];
-    }
-  };
-
-  var process_teacher_input = function(){
-    teacher_strokes = [];
-    //need to get data from database
-    console.log("getCookie");
-    var temp = getCookie("teacher_strokes");
-    temp = String(temp).split(",");
-    var amount = 0;
-    var temp_stroke=[];
-    for(var i = 0; i < temp.length;i++){
-      if(amount < 5){//is ,
-        temp_stroke.push(parseInt(temp[i]));
-        amount +=1;
-      }
-      if(amount == 5){
-        amount = 0;
-        teacher_strokes.push(temp_stroke);
-        temp_stroke = [];
-      }
-    }
-    console.log("teacher_strokes:"+JSON.stringify(teacher_strokes));
-    draw_example_teach(teacher_strokes,screen_width/2,screen_height/3,line_color,line_width);
   };
 
   var init_teach = function(){
@@ -200,7 +185,8 @@ var teach = function(p){
     if(fps_number == example.length){  //>= and == is equal，show some message
       //show some tips,such as "do you know how to draw? just try it by yourself"
       //alert("do you know how to draw? just try it by yourself!");
-        tips = "学会了吗？点击画一画来试一试吧~";
+        tips = "学会了吗？1.you can click the draw to start your sketch drawing  " +
+            "2. when you forget, you can click generate,let the machine to finish your drawing!";
         $.cxDialog({
           title:'结束教学',
           info :tips,
@@ -247,9 +233,18 @@ var teach = function(p){
 };
 
 var sketch = function(p){
+
   var init = function(){
     screen_width = Math.max(window.innerWidth, 480)/3;
     screen_height = Math.max(window.innerHeight, 320)/3;
+     //about the sketchrnn model
+    ModelImporter.set_init_model(model_raw_data);
+    if (use_large_models) {
+      ModelImporter.set_model_url("https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/");
+    }
+    model_data = ModelImporter.get_model_data();
+    model = new SketchRNN(model_data);
+    model.set_pixel_factor(screen_scale_factor);
 
     insize_x = screen_width+10;
     insize_y = screen_height+100;
@@ -278,11 +273,15 @@ var sketch = function(p){
     submit_button.parent("button");
     submit_button.style("margin","5px");
     submit_button.mousePressed(submit_button_event);
+   //generate
+    gen_button = p.createButton("generate");
+    gen_button.parent("button");
+    gen_button.style("margin","5px");
+    gen_button.mousePressed(gen_button_event);
 
     draw_canvas = p.createCanvas(insize_x,insize_y);
     draw_canvas.parent("draw");
     draw_canvas.style("border","1px solid red");
-
     p.frameRate(60);
     p.background(255, 255, 255, 255);
 
@@ -294,6 +293,8 @@ var sketch = function(p){
     //for student's input
     has_started = false;
     learn_gate = false;
+    gen = false;
+    model_is_active = false;
 
 
     strokes = [];
@@ -308,6 +309,7 @@ var sketch = function(p){
   var redraw_screen = function(){
     p.background(255, 255, 255, 255);//this is for clean
     p.fill(255, 255, 255, 255);
+    predict_line_color = p.color(p.random(64, 224), p.random(64, 224), p.random(64, 224));
     if (strokes && strokes.length > 0) {//less point than raw_strokes
       draw_example(strokes, start_x, start_y, line_color, line_width);
     }
@@ -355,6 +357,11 @@ var sketch = function(p){
     restart();
     learn_gate = true;
   };
+
+  var gen_button_event = function(){
+    gen = true;
+    console.log(gen)
+  };
   var submit_button_event = function(){
     pen = 0;
     learn_gate = false;
@@ -374,6 +381,66 @@ var sketch = function(p){
     line_width = size;
   };
 
+  var downModel = function(){
+    var c = model_selected
+     var model_mode = "gen";
+     console.log("user wants to change to model "+c);
+     var call_back = function(new_model) {
+      model = new_model;
+      model.set_pixel_factor(screen_scale_factor);
+      encode_strokes(strokes);
+      redraw_screen();
+    }
+    console.log("finish the download model!")
+    ModelImporter.change_model(model, c, model_mode, call_back);
+  }
+
+  var encode_strokes = function(sequence) {//decoder the input
+      model_state_orig = model.zero_state();
+      if (sequence.length <= min_sequence_length) {
+          return;
+      }
+      model_state_orig = model.update(model.zero_input(), model_state_orig);//x,y divided by scale factor
+      //update the rnn with input x, state s, and optional latent vector y.
+      for (var i=0;i<sequence.length-1;i++) {
+        model_state_orig = model.update(sequence[i], model_state_orig);
+      }
+      //the model_state_orig is the last state of rnn
+      //decoder the drawing you draw
+      restart_model(sequence); //get the last point and it's state
+      model_is_active = true;
+  }
+
+  var restart_model = function(sequence) {
+
+    model_state = model.copy_state(model_state_orig); // bounded return [h,c]
+
+    var idx = raw_lines.length-1;
+    var last_point = raw_lines[idx][raw_lines[idx].length-1];
+    var last_x = last_point[0];
+    var last_y = last_point[1];
+
+    // individual models:
+    var sx = last_x;//raw lines
+    var sy = last_y;
+
+    var dx, dy, pen_down, pen_up, pen_end;
+    var s = sequence[sequence.length-1];//last stroke
+
+    model_x = sx;//the last point you draw
+    model_y = sy;
+
+    dx = s[0];
+    dy = s[1];
+    pen_down = s[2];
+    pen_up = s[3];
+    pen_end = s[4];
+
+    model_dx = dx;
+    model_dy = dy;
+    model_prev_pen = [pen_down, pen_up, pen_end];
+
+  }
 
   p.setup = function(){
     init();
@@ -382,29 +449,17 @@ var sketch = function(p){
     //console.log("timeStart: "+timeStart);
   };
   p.draw=function(){
-    if(learn_gate ==true){
+    if(selected_model == true){
+      downModel();
+      selected_model = false;
+    }
+    if(learn_gate == true){
       process_student_input();
+      generateSketch()
     }
     timeEnd = Date.parse(new Date());
     //console.log("timeEnd:" + timeEnd);
     delayTime = timeEnd-timeStart;
-    //console.log("delayTime: "+delayTime);
-    /*
-    if(pen == 1  && learn_gate == true  && delayTime > 1000*60*0.5){ // 如果超时？
-      tips = "结束你的大作了吗？点击提交看看你拿了多少分吧？";
-      pen = 0;
-      console.log(tips)
-      $.cxDialog({
-      title:'提示',
-      info :tips,
-      okText:"好",
-      ok:function(){
-        timeStart = Date.parse(new Date());
-        pen = 0
-      },
-      background:"blue",
-      });
-  }*/
   };
 
   //p.save(draw_canvas,"student.jpg");
@@ -440,9 +495,6 @@ var sketch = function(p){
           // update raw_lines
           current_raw_line.push([x, y]);
           just_finished_line = true;
-
-          // using the previous pen states, and hidden state, get next hidden state 
-          // update_rnn_state();
         }
       }//not the first point
     } else { // pen is above the paper or over the width and heigth
@@ -464,7 +516,11 @@ var sketch = function(p){
           stroke = DataTool.line_to_stroke(current_raw_line_simple, last_point);
           raw_lines.push(current_raw_line_simple);
           strokes = strokes.concat(stroke);
-          redraw_screen();//draw the user's inputs
+          // if the student click the gen button,
+          console.log(gen)
+          console.log(model_is_active)
+
+          redraw_screen();//draw the user's input
 
         } else {
           if (raw_lines.length === 0) {
@@ -475,9 +531,48 @@ var sketch = function(p){
         current_raw_line = [];
         just_finished_line = false;
       }
+
     }
     prev_pen = pen;
-  };
+  };//end of student's drawing
+
+ var generateSketch = function(){
+   if(gen == true){
+     encode_strokes(strokes);//give the model'prev state
+     model_is_active = true;
+   }
+   if (model_is_active) {
+      model_pen_down = model_prev_pen[0];
+      model_pen_up = model_prev_pen[1];
+      model_pen_end = model_prev_pen[2];
+
+      model_state = model.update([model_dx, model_dy, model_pen_down, model_pen_up, model_pen_end], model_state);
+      model_pdf = model.get_pdf(model_state);//get pdf,model_state is [h,c],return mu1,mu2,sigma1,sigma2
+      [model_dx, model_dy, model_pen_down, model_pen_up, model_pen_end] = model.sample(model_pdf, temperature);
+
+      if (model_pen_end === 1) {//end the drawing
+        restart_model(strokes); //give the model some value:model_prev_pen
+        //model_pen_end = 0;
+        //model_pen_down = 1;
+        //model_pen_up = 1;
+        redraw_screen();
+      } else {
+          //
+        if (model_prev_pen[0] === 1) { //pen down
+
+          // draw line connecting prev point to current point.
+          p.stroke(predict_line_color);
+          p.strokeWeight(line_width);
+          p.line(model_x, model_y, model_x+model_dx, model_y+model_dy);//will over the canvas
+        }
+
+        model_prev_pen = [model_pen_down, model_pen_up, model_pen_end];
+
+        model_x += model_dx;
+        model_y += model_dy;
+      }
+   } //end of the model
+ };//end of generateSketch
 };
 
 //send image to python back
@@ -520,21 +615,6 @@ function ajaxSubmit(){
     })
 };
 
-var getValue = function(model){
-  console.log(model)
-  $.ajax({
-    url:"/select_model",
-    type:"POST",
-    data:JSON.stringify(model),
-    processData: false, // 不会将 data 参数序列化字符串
-    contentType: false, // 根据表单 input 提交的数据使用其默认的 contentType
-    success:function(origin){
-      console.log(origin)
-      teacher_strokes = origin;
-    }
-  })
-}
-
 function ShowScore(score){
   score = score*100;
   console.log(score);
@@ -558,6 +638,25 @@ var showTips=function(tip){
       },
       background:"blue",
       });
+}
+
+var getValue = function(tempmodel){
+//get the model from google
+//change model
+  model_selected = tempmodel;
+  selected_model = true;
+  console.log(tempmodel)
+  $.ajax({
+    url:"/select_model",
+    type:"POST",
+    data:JSON.stringify(tempmodel),
+    processData: false, // 不会将 data 参数序列化字符串
+    contentType: false, // 根据表单 input 提交的数据使用其默认的 contentType
+    success:function(origin){
+      console.log(origin)
+      teacher_strokes = origin;
+    }
+  })
 }
 
 window.onload=function(){
