@@ -1,0 +1,33 @@
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }} - SketchDrawing</title>
+        {% else %}
+        <title>Welcome to SketchDrawing</title>
+        {% endif %}
+    </head>
+    <body style="color: turquoise;background: goldenrod;">
+        <div style="font-size: 18px;margin-left: 50px;">
+            {% if current_user.is_anonymous %}
+            <a href="{{ url_for('login') }}">Login</a>
+            {% else %}
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            {% endif %}
+        </div>
+        <hr>
+        {% with messages = get_flashed_messages() %}  <!--this is for flash,出现错误的时候，和route中的flash一起用-->
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <div style="color: turquoise;background: goldenrod;text-align:  center;">
+            <h1>SketchDrawing</h1>
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>
