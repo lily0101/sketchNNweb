@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {% extends "base.html" %}
 
 {% block content %}
@@ -18,25 +17,4 @@
             <p>{{ form.submit() }}</p>
         </form>
     </div>
-=======
-{% extends "base.html" %}
-
-{% block content %}
-    <div class="page-header">
-        <h1>创建class</h1>
-    </div>
-    <div class="col-md-6">
-        <form class="form form-horizontal" method="POST" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.title.label }}<br>
-                {{ form.title(size=32) }}<br>
-                {% for error in form.title.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p>{{ form.submit() }}</p>
-        </form>
-    </div>
->>>>>>> origin/master
 {% endblock %}
