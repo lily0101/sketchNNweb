@@ -45,6 +45,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 log/
+migrations/
 flask/
 app/SketchModel/
 app/static/images/
