@@ -46,10 +46,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 log/
+migrations/
 flask/
 migrations/
 app/SketchModel/
-app/static/images/
 app/static/data/
 venv/
 *.pyc

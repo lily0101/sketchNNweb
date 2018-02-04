@@ -122,11 +122,18 @@ def select_model():
             global student_model 
             student_model = model
             if teacher_user_id == -1:
+<<<<<<< HEAD
                 teacher_user_id = 2
             print(teacher_user_id)
             album = Album.query.filter_by(title=student_model,author_id=teacher_user_id).first() #get the album,
             print(album)
             print(len(album.photos.all()))
+=======
+                teacher_user_id = 1
+            print(teacher_user_id)
+            album = Album.query.filter_by(title=student_model,author_id=teacher_user_id).first() #get the album,
+            print(album)
+>>>>>>> origin/master
             random_int = random.randint(0,len(album.photos.all())-1)
             #read strokes and return 
             strokes = np.load(album.photos[random_int].url)
