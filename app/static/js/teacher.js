@@ -191,6 +191,7 @@ var sketch = function( p ) {
           // alert('Done,Picture Uploaded')  //get success id
     }
    })
+    redraw_screen();
     //end_type.value('');
 };
 

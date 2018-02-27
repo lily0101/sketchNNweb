@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block top %}
+    {{ super }}
+    <a href="{{ url_for('history') }}"><img id="back_history" src="/static/images/icon32/back.svg" title="back_history" alt="back_history"></a>
+{% endblock %}
+
+{% block content%}
+<body>
+    <div>
+        {% for image in top5_images %}
+           <img id = "image_{{ image }}" src="{{image}}" alt = "student drawing!" title="{{image}}" )>
+        {% endfor %}
+    </div>
+</body>
+{% endblock %}

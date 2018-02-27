@@ -47,15 +47,24 @@ def history():
             #do something to deal the url
             url = p.url.split('app')
             print(url)
-            all_url.append([url[1],p.score*1000])
+            all_url.append([url[1],p])
 
-        print(all_url)
-    '''
-    env = jinja2.Environment()
-    env.globals.update(zip=zip)
-    env.from_string('history.html').render(all_url=all_url, all_photo=photos)
-    '''
     return render_template('history.html',all_url=all_url)
+
+@app.route('/sketch2image/<photoid>',methods=['GET','POST'])
+@login_required
+def sketch2image(photoid):
+    '''the photo id is different and link to different result'''
+    ##call the tools.sketch2image function
+    photo = Photo.query.filter_by(id=photoid).first()
+    top5_images = tools.SketchToImage(photo.url)
+    top5 = []
+    for image in top5_images:
+        top5.append(image.split('app')[1])
+        print(image.split('app'))
+
+    return render_template("sketch2image.html",top5_images=top5)
+
 
 @app.route('/teacher',methods=['GET','POST'])
 @login_required
@@ -122,7 +131,7 @@ def select_model():
             global student_model 
             student_model = model
             if teacher_user_id == -1:
-                teacher_user_id = 2
+                teacher_user_id = 1
             print(teacher_user_id)
             album = Album.query.filter_by(title=student_model,author_id=teacher_user_id).first() #get the album,
             print(album)
@@ -166,18 +175,18 @@ def student():
                 file.save(url)
                 images.append(url)
 
-        score = tools.templateMatch(images)
-        print(score)
+        #score = tools.templateMatch(images) #it's templateMatch
+        #print(score)
         #use the CNN+LSTM
-        #score = tools.sketchClassifier(images[1]) # the first of the return score is the prob of the class so slowly
+        score = tools.sketchClassifier(images[1]) # the first of the return score is the prob of the class so slowly
 
         photo = Photo(url=images[1],score=score,
                               album=album, author=user)
         db.session.add(photo)
         db.session.commit()
         # only save the student's url in SQLITE? or save all of them for score
-        print(np.mean(score))
-        return jsonify(np.mean(score))
+        print(score)
+        return jsonify(score)
     return render_template('student.html')
 
 @app.route('/login', methods=['GET', 'POST'])

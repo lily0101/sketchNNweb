@@ -3,12 +3,11 @@
 {% block content %}
     <h1>Welcome, {{ current_user.username }}!What are you want to do ?</h1>
         <!--how to identify the student and teacher?-->
-        {% if current_user.get_id() == 1 %}
-        <a href="{{ url_for('teacher') }}" style="font-size: xx-large;" >Drawing</a>
-        <a href="{{ url_for('history') }}" style="font-size: xx-large;">history</a>
+        {% if current_user.username == "teacher" %}
+        <a href="{{ url_for('teacher') }}" style="font-size: xx-large;" ><img id = "image_teacher_drawing" src="/static/images/icon64/pencil.svg" title="teacher_drawing"></a>
         {% else %}
-        <a href="{{ url_for('student') }}" style="font-size: xx-large;">Drawing</a>
-        <a href="{{ url_for('history') }}" style="font-size: xx-large;">history</a>
+        <a href="{{ url_for('student') }}" style="font-size: xx-large;"><img id ="image_student_drawing" src="/static/images/icon64/pencil.svg" title="student_drawing"></a>
+        <a href="{{ url_for('history') }}" style="font-size: xx-large;"><img id ="image_student_history" src="/static/images/icon64/history.svg" title="student_history"></a>
         {% endif %}
 
 {% endblock %}

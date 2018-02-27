@@ -8,12 +8,14 @@
     </head>
     <body style="color: turquoise;background: goldenrod;">
         <div style="font-size: 18px;margin-left: 50px;">
+            {% block top %}
             {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('login') }}"><img id="login" src="/static/images/icon48/login.svg" title="login" alt="login"></a>
             {% else %}
-            <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="{{ url_for('home') }}"><img id="home" src="/static/images/icon48/Home.svg" title="Home" alt="Home"></a>
+            <a href="{{ url_for('logout') }}"><img id="logout" src="/static/images/icon48/logout.svg" title="Logout" alt="Logout"></a>
             {% endif %}
+            {% endblock %}
         </div>
         <hr>
         {% with messages = get_flashed_messages() %}  <!--this is for flash,出现错误的时候，和route中的flash一起用-->

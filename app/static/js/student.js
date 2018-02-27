@@ -367,7 +367,9 @@ var sketch = function(p){
     }
     else{
         gen = false;
-        gen_num = 0
+        gen_num = 0;
+        redraw_screen();//if you want to save the generate sketch, you can remove this code
+        //draw_example(strokes, start_x, start_y, line_color, line_width);
     }
 
   };
@@ -624,7 +626,7 @@ function ajaxSubmit(){
 };
 
 function ShowScore(score){
-  score = score*100;
+  score = score*10;
   console.log(score);
   //biggest score is 1, the smallest is 0
   switch(true){

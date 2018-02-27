@@ -1,10 +1,21 @@
 {% extends "base.html" %}
 
 {% block content%}
+<head>
+   <meta charset="UTF-8">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+  <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/lib/p5.min.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/lib/p5.dom.min.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/lib/numjs.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/lib/sketch_rnn.js"></script>
+</head>>
+<body>
     <div>
         {% for url in all_url %}
-        <image src="{{url[0]}}" alt = "student drawing!" title="{{url[1]}}"></image>
+            <a href="/sketch2image/{{ url[1].id }}"><img id = "image_{{ url[0] }}" src="{{url[0]}}" alt = "student drawing!" title="{{url[1]}}" )> </a>
         <!--when you move your mouse to the picture,the score will show-->
         {% endfor %}
     </div>
+</body>
 {% endblock %}
