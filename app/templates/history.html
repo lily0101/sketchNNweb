@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-
+{% block top %}
+    <a href="{{ url_for('home') }}"><img id="back_home" src="/static/images/icon48/back.svg" title="back_home">
+{% endblock top %}
 {% block content%}
 <head>
    <meta charset="UTF-8">
@@ -13,7 +15,7 @@
 <body>
     <div>
         {% for url in all_url %}
-            <a href="/sketch2image/{{ url[1].id }}"><img id = "image_{{ url[0] }}" src="{{url[0]}}" alt = "student drawing!" title="{{url[1]}}" )> </a>
+            <a href="/sketch2image/{{ url[1].id }}"><img id = "image_{{ url[0] }}" src="{{url[0]}}" alt = "history!" title="{{url[1].score}}" )> </a>
         <!--when you move your mouse to the picture,the score will show-->
         {% endfor %}
     </div>

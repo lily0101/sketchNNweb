@@ -651,8 +651,9 @@ var showTips=function(tip){
 }
 
 var getValue = function(tempmodel){
-//get the model from google
-//change model
+    //get the model from google
+  //change model
+    //set the model
   model_selected = tempmodel;
   selected_model = true;
   console.log(tempmodel)

@@ -69,13 +69,13 @@ def sketch2image(photoid):
 @app.route('/teacher',methods=['GET','POST'])
 @login_required
 def teacher():
-    if request.method == 'POST':
+    if request.method == 'POST' and teacher_model:
         #print("get the file?")
         data = json.loads(request.get_data())
         print(data)
         author = current_user._get_current_object()
         #只能通过model来选择，不能同时判断两个条件吗？主要是author是不能用在查找的，只能用来关联
-        print(teacher_model)
+        print("in teacher, the select_model is:"+teacher_model)
         album = Album.query.filter_by(title=teacher_model,author_id=author.id).first() #get the album
         print(album)#find the selected album
         if album:
@@ -100,7 +100,8 @@ def teacher():
         db.session.add(photo)
         db.session.commit()
         flash('添加你的作品集到数据库啦！', 'success')
-        return redirect(url_for('teacher'))#重定向到这个url
+        return jsonify("save to disk is success!")
+        #return redirect(url_for('teacher'))#重定向到这个url
     return render_template('teacher.html')
 
 
@@ -109,38 +110,43 @@ def teacher():
 def select_model():
     if request.method == 'POST':#get strokes
         model = json.loads(request.get_data())
-        print(model)
-        user = current_user._get_current_object()
-        album = Album.query.filter_by(title=model,author_id=user.id).first() #get the album,
-        print(album)#album 1
-        if album:
+        if model == '':
             pass
         else:
-            album = Album(title=model, author=user)
-            db.session.add(album)
-            db.session.commit()
-            print(album)
-        if user.username == 'teacher':#admin
-            global teacher_model 
-            teacher_model = model
-            global teacher_user_id
-            teacher_user_id = user.id
-            print(teacher_user_id)
-            return redirect(url_for('teacher')) #
-        else:  #student .get the teacher's drawing
-            global student_model 
-            student_model = model
-            if teacher_user_id == -1:
-                teacher_user_id = 1
-            print(teacher_user_id)
-            album = Album.query.filter_by(title=student_model,author_id=teacher_user_id).first() #get the album,
-            print(album)
-            print(len(album.photos.all()))
-            random_int = random.randint(0,len(album.photos.all())-1)
-            #read strokes and return 
-            strokes = np.load(album.photos[random_int].url)
-            print(strokes)
-            return jsonify(strokes.tolist())
+            user = current_user._get_current_object()
+            album = Album.query.filter_by(title=model,author_id=user.id).first() #get the album,
+            #print(album)#album 1
+            if album:
+                pass
+            else:
+                album = Album(title=model, author=user)
+                db.session.add(album)
+                db.session.commit()
+                #print(album)
+            if user.username == 'teacher':#admin
+                global teacher_model
+                teacher_model = model
+                print("select_model,teacher_model is " + teacher_model)
+                global teacher_user_id
+                teacher_user_id = user.id
+                return jsonify("model selected is success!")
+                #print(teacher_user_id)
+                #return redirect(url_for('teacher')) #
+            else:  #student .get the teacher's drawing
+                global student_model
+                student_model = model
+                print("select_model,student_model is "+student_model)
+                if teacher_user_id == -1:
+                    teacher_user_id = 1
+                print(teacher_user_id)
+                album = Album.query.filter_by(title=student_model,author_id=teacher_user_id).first() #get the album,
+                print(album)
+                print(len(album.photos.all()))
+                random_int = random.randint(0,len(album.photos.all())-1)
+                #read strokes and return
+                strokes = np.load(album.photos[random_int].url)
+                print(strokes)
+                return jsonify(strokes.tolist())
     return redirect(url_for('home'))
     
 @app.route('/student',methods=['GET','POST'])
@@ -151,6 +157,7 @@ def student():
         user = current_user._get_current_object()
         album = Album.query.filter_by(title=student_model,author_id=user.id).first() #get the album
         print(album)
+        print("student, student_model is :"+student_model)
         if album:
             pass
         else:

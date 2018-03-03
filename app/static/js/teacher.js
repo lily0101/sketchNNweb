@@ -316,7 +316,6 @@ function getValue(model){
       success:function(origin){
         console.log(origin)
         teacher_strokes = origin;
-
         //do something
         //ShowScore(score);
       }
