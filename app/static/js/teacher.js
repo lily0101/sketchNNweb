@@ -22,7 +22,7 @@ var current_raw_line = [];
 var current_raw_line_simple;
 var strokes = [];
 var stroke;
-
+var model = '';
 var last_point, idx;
 
 var line_color = 'red';
@@ -178,6 +178,7 @@ var sketch = function( p ) {
       //add this to cookie
     var dataStrokes = {
         "strokes": strokes,
+        "model":model,
     }
     $.ajax({
         url:"/teacher",
@@ -302,11 +303,12 @@ var sketch = function( p ) {
 
     prev_pen = pen;
   };
-};
 
-function getValue(model){  
-    // method 2   
+  function getValue(model){
+    // method 2
     console.log(model)
+    model = model;
+    /*
     $.ajax({
       url:"/select_model",
       type:"POST",
@@ -319,12 +321,12 @@ function getValue(model){
         //do something
         //ShowScore(score);
       }
-    })
-}
+    })*/
+  }
+};
 //set the stokes 
 window.onload=function(){
   var custom_p5 = new p5(sketch, 'sketch');
-
 }
 
 

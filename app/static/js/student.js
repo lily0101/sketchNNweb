@@ -609,7 +609,8 @@ function ajaxSubmit(){
     var student = canvasTodata(draw_canvas.elt);//return blob
     var fd = new FormData();
     fd.append("image", origin, "teacher.png");
-    fd.append("image",student,"student.png")
+    fd.append("image",student,"student.png");
+    fd.append("model",model_selected);
     console.log(fd);
     $.ajax({
       url:"/student",
