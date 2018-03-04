@@ -87,6 +87,7 @@ var stroke;
 var last_point, idx;
 
 //dom
+var model_radio;
 var submit_button;
 var teach_button;
 var draw_button;
@@ -140,6 +141,14 @@ var teach = function(p){
     teach_canvas.style("border","1px solid red");
     teach_canvas.parent("teach");
 
+   //model selected
+        model_radio = p.createRadio();
+    model_radio.option("flower",'flower');
+    model_radio.option("cat",'cat');
+    model_radio.option("airplane",'airplane');
+    model_radio.parent("model_selected");
+    model_radio.mouseClicked(getValue)
+
     p.frameRate(25);
     p.background(255, 255, 255, 255);
   };
@@ -147,6 +156,27 @@ var teach = function(p){
     restart_teach();
     teach_gate = true;
   }
+
+  var getValue = function(){
+        //get the model from google
+      //change model
+        //set the model
+      model_selected = model_radio.value();
+      selected_model = true;
+      $.ajax({
+        url:"/select_model",
+        type:"POST",
+        data:JSON.stringify(model_selected),
+        processData: false, // 不会将 data 参数序列化字符串
+        contentType: false, // 根据表单 input 提交的数据使用其默认的 contentType
+        success:function(origin){
+          console.log(origin)
+          teacher_strokes = origin;
+        }
+      })
+    }
+
+  //download model from google
 
   //one time draw one line
   var draw_processing = function(example){
@@ -221,6 +251,8 @@ var teach = function(p){
     //console.log("init the canvas");
     init_teach();
     restart_teach();
+    //getValue();
+   // console.log("the teacher strokes is in student's sketch:"+teacher_strokes);
     //process_teacher_input();//get the teacher's strokes
   };
   p.draw = function(){
@@ -651,25 +683,6 @@ var showTips=function(tip){
       });
 }
 
-var getValue = function(tempmodel){
-    //get the model from google
-  //change model
-    //set the model
-  model_selected = tempmodel;
-  selected_model = true;
-  console.log(tempmodel)
-  $.ajax({
-    url:"/select_model",
-    type:"POST",
-    data:JSON.stringify(tempmodel),
-    processData: false, // 不会将 data 参数序列化字符串
-    contentType: false, // 根据表单 input 提交的数据使用其默认的 contentType
-    success:function(origin){
-      console.log(origin)
-      teacher_strokes = origin;
-    }
-  })
-}
 
 window.onload=function(){
   var learn_p5 = new p5(teach, 'teach');

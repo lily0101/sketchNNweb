@@ -30,6 +30,7 @@ var line_width = '2.0';
 
 //dom
 var color_sel;
+var model_radio;
 var size_sel;
 var end_button;
 var canvas;
@@ -112,12 +113,14 @@ var sketch = function( p ) {
     clean_button.parent('button');
     clean_button.style('margin','5px');
     clean_button.mousePressed(redraw_screen);
-    /*
-    end_button = p.createButton('end draw');
-    end_button.parent('button');
-    end_button.style('margin','5px');
-    end_button.mousePressed(sendStrokes); // attach button listener
-    */
+
+    model_radio = p.createRadio();
+    model_radio.option("flower",'flower');
+    model_radio.option("cat",'cat');
+    model_radio.option("airplane",'airplane');
+    model_radio.parent("model_selected");
+    //model_radio.mousePressed(sendStrokes); // attach button listener
+
     color_sel = p.createSelect();
     color_sel.parent("color")
     for (var i=0;i<color_list.length;i++) {
@@ -178,7 +181,7 @@ var sketch = function( p ) {
       //add this to cookie
     var dataStrokes = {
         "strokes": strokes,
-        "model":model,
+        "model":model_radio.value(),
     }
     $.ajax({
         url:"/teacher",

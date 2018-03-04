@@ -117,29 +117,18 @@ def select_model():
             db.session.add(album)
             db.session.commit()
             #print(album)
-        if user.username == 'teacher':#admin
-            global teacher_model
-            teacher_model = model
-            print("select_model,teacher_model is " + teacher_model)
-            global teacher_user_id
-            teacher_user_id = user.id
-            return jsonify("model selected is success!")
-            #print(teacher_user_id)
-            #return redirect(url_for('teacher')) #
-        else:  #student .get the teacher's drawing
-            student_model = model
-            print("select_model,student_model is "+student_model)
-            if teacher_user_id == -1:
-                teacher_user_id = 1
-            print(teacher_user_id)
-            album = Album.query.filter_by(title=student_model,author_id=teacher_user_id).first() #get the album,
-            print(album)
-            print(len(album.photos.all()))
-            random_int = random.randint(0,len(album.photos.all())-1)
-            #read strokes and return
-            strokes = np.load(album.photos[random_int].url)
-            print(strokes)
-            return jsonify(strokes.tolist())
+        student_model = model
+        print("select_model,student_model is "+ student_model)
+        teacher_user_id = 1
+        print(teacher_user_id)
+        album = Album.query.filter_by(title=student_model,author_id=teacher_user_id).first() #get the album,
+        print(album)
+        print(len(album.photos.all()))
+        random_int = random.randint(0,len(album.photos.all())-1)
+        #read strokes and return
+        strokes = np.load(album.photos[random_int].url)
+        print(strokes)
+        return jsonify(strokes.tolist())
     return redirect(url_for('home'))
     
 @app.route('/student',methods=['GET','POST'])
