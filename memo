@@ -1,0 +1,61 @@
+1.in root environment,you can use tensorflow-gpu-1.2.0 & opencv & python3.6 
+2.in envs python2 ,you can use tensorflow-gpu-1.2.0&opencv& python2.7 
+when the backend is not tensorflow ,you can use command "KERAS_BACKEND=tensorflow" to change that before you run your file
+3.source activate magenta-gpu ,you can use magenta
+
+for my deliberation sketch rnn :
+python train.py --log_root=./checkpoint/ --data_dir=/home/chenxingli/graduation_project/dataset/sketch-rnn-datasets/aaron_sheep/ --hparams="data_set=[aaron_sheep.npz]"
+
+for google sketch rnn:
+python sketch_rnn_train.py --log_root=./checkpoint/ --data_dir=/home/chenxingli/graduation_project/dataset/sketch-rnn-datasets/aaron_sheep/ --hparams="data_set=[aaron_sheep.npz]"
+
+4.sudo su and caffe must cd into the directory /home/chenxingli/caffe/caffe/python and run python or ipython, then you can use import caffe in your file in before directory.
+myclassify.py is for sketch png. 
+
+5.run pycharm, sh /opt/pycharm-2017.3.3/bin/pycharm.sh
+
+6. in sketchNNWeb directory, in caffe-tf envs, you can use export FLASK_APP=run.py, flask run to start the web system.(the sketch-pythonWeb just a test project,not to use that)
+
+7.in caffe-tf envs, you can use 
+export FLASK_APP=run.py
+flask run
+to start the web system.
+For a new database
+1.flask db init
+2.flask db migrate -m "users table"
+3.flask db upgrade
+when you change the models,you can do from step 2.
+
+8.in the sketchclassification,you can find the source code to process the svg image and some examples.
+
+9. about git
+if you want to ignore some files when you want to push,you can modify the .gitignore file
+push file:
+git add .
+git commit -m "first commit"
+git push origin master(after you have done : git remote add origin git@github.your)
+add tag:
+git tag(check tag ,git branch)
+git tag v1.0
+git push origin v1.0
+git tag -d v1.0(delete)
+git push origin :v1.0
+
+delete files:
+git rm -f --cached files
+git commit -m "delete"
+git push -u origin master
+before git push:
+git pull (it's dangerous, so you should check again)
+
+get files from github
+
+git fetch & git merge??
+
+start server:
+follow the csdn blog.
+
+check port:
+netstat -apn | grep 5001
+kill -9 port
+
