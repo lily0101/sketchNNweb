@@ -1,37 +1,82 @@
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="/static/lib/image.css">
-        {% if title %}
-        <title>{{ title }} - SketchDrawing</title>
-        {% else %}
-        <title>Welcome to SketchDrawing</title>
-        {% endif %}
-    </head>
-    <body style="color: turquoise;background: goldenrod;">
-        <div style="font-size: 18px;margin-left: 50px;">
+{% extends "bootstrap/base.html" %}
 
-            {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}"><img id="login" src="/static/images/icon48/login.svg" title="login" alt="login"></a>
-            {% else %}
-            <a href="{{ url_for('home') }}"><img id="home" src="/static/images/icon48/Home.svg" title="Home" alt="Home"></a>
-            <a href="{{ url_for('logout') }}"><img id="logout" src="/static/images/icon48/logout.svg" title="Logout" alt="Logout"></a>
-            {% endif %}
-            {% block top %}
-            {% endblock top %}
+
+{% block title %}
+    {% if title %}
+    <title> {{ title }}-SketchDrawing </title>
+    {% else %}
+    <title> Welcome to SketchDrawing </title>>
+    {% endif %}
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet"
+      href="{{url_for('static', filename='css/image.css')}}">
+{% endblock  %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+
         </div>
-        <hr>
-        {% with messages = get_flashed_messages() %}  <!--this is for flash,出现错误的时候，和route中的flash一起用-->
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        <div style="color: turquoise;background: goldenrod;text-align:  center;">
-            <h1>SketchDrawing</h1>
-            {% block content %}{% endblock %}
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                {% if current_user.is_administrator() %}
+                         <li><a href="{{ url_for('teacher') }}">SketchDrawing</a></li>
+                     {% else %}
+                        <li><a href="{{ url_for('index') }}">SketchDrawing</a></li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="{{url_for('static', filename='images/icon32/drawing.svg')}}">
+                        Account <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('history') }}">History</a></li>
+                        <li><a href="{{ url_for('edit_profile') }}">Profile</a></li>
+                        <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li><a href="{{ url_for('login') }}">Log In</a></li>
+                {% endif %}
+            </ul>
         </div>
-    </body>
-</html>
+    </div>
+</div>
+{% endblock %}
+
+  {% block content %}
+  <div style="text-align:center;color: mediumseagreen" >
+      {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+       {{ message }}
+        </div>
+      {% endfor %}
+     <h1>SketchDrawing</h1>
+     {% block page_content %}{% endblock %}
+     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

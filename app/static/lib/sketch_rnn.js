@@ -339,6 +339,7 @@ var ModelImporter = {};
           if (cache_model_mode) {
             console.log("caching the model.");
             model_data_archive[model_name] = response; // cache it
+            //localStorage.setItem(model_name,model_data_archive[model_data_archive])
           } else {
             console.log("not caching the model.");
           }

@@ -4,11 +4,15 @@
 #yellow{background:yellow; width:30px;height: 27px}
 #white{background:black; width:30px;height: 27px}
 #zi{background:#8B026B; width:30px;height: 27px}
-body {
-     margin: auto;
-     text-align: center;
-
+body{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.42857143;
+    color: antiquewhite;
+    background-color: antiquewhite;
 }
+
 #container{
     padding-top: 20px;
     padding-bottom:10px;
@@ -23,7 +27,6 @@ body {
     padding: 0;
     margin-top: 20px;
 }
-
 #text{
     padding: 0;
     margin: 0;

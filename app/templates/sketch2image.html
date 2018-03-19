@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block top %}
-    <a href="{{ url_for('history') }}"><img id="back_history" src="/static/images/icon48/back.svg" title="back_history" alt="back_history"></a>
-{% endblock %}
+{% block title %}SketchDrawing- Sketch2Image{% endblock %}
 
-{% block content%}
-<body>
+
+
+
+{% block page_content%}
     <div>
         <p style="font-family: Verdana;font-size: x-large;color: green">
             the real images in nature.
@@ -16,5 +16,4 @@
            <img id = "image_{{ image }}" src="{{image}}" alt = "student drawing!" title="{{image}}" )>
         {% endfor %}
     </div>
-</body>
 {% endblock %}

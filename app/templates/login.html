@@ -1,7 +1,15 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-{% block content %}
-    <h1>Sign In</h1>
+{% block title %}SketchDrawing- Login{% endblock %}
+{% block navbar %}
+    {{ super() }}
+{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h1>Login</h1>
+</div>
+    <div >
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
@@ -22,4 +30,6 @@
         <p>{{ form.submit() }}</p>
     </form>
     <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
+    </div>
 {% endblock %}
+

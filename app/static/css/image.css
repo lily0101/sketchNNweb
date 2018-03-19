@@ -1,0 +1,22 @@
+img{
+    border-radius: 50%;
+    border-width: medium;
+}
+body{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.42857143;
+    background-color: antiquewhite;
+}
+
+.col-md-4{
+    text-align: center;
+}
+
+#container{
+    padding-top: 20px;
+    padding-bottom:10px;
+    margin: 0px auto;
+    text-align: center;
+}

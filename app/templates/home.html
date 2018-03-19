@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block page_content %}
+    {{ super() }}
     <h1>Welcome, {{ current_user.username }}!What are you want to do ?</h1>
         <!--how to identify the student and teacher?-->
         {% if current_user.username == "teacher" %}

@@ -9,4 +9,14 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+    FLASKY_MAIL_SUBJECT_PREFIX = '[SketchDrawing]'
+    FLASKY_ADMIN ='1196027787@qq.com'
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MAIL_SERVER = "smtp.qq.com"
+    MAIL_PORT = 587 #or 587 or 465
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = "1196027787@qq.com"
+    MAIL_PASSWORD = "lily0101"
+    FLASKY_MAIL_SENDER = '1196027787@qq.com'
 
