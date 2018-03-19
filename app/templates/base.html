@@ -36,7 +36,7 @@
                 {% if current_user.is_administrator() %}
                          <li><a href="{{ url_for('teacher') }}">SketchDrawing</a></li>
                      {% else %}
-                        <li><a href="{{ url_for('index') }}">SketchDrawing</a></li>
+                        <li><a href="{{ url_for('student') }}">SketchDrawing</a></li>
                 {% endif %}
                 {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
