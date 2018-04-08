@@ -12,6 +12,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, '/static/data')
 caffe_root = APP_ROOT
+
 def sketchClassifier(url):
     net_file = caffe_root + '/SketchModel/classifier/deploy.prototxt'
     caffe_model = caffe_root + '/SketchModel/classifier/caffe_alexnet_train_sketch_57_43_3_iter_10500.caffemodel'

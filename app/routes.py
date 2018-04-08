@@ -1,10 +1,10 @@
-from flask import render_template, flash, redirect, url_for, request,send_from_directory,jsonify
+from flask import render_template, flash, redirect, current_app,url_for, request,send_from_directory,jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 #from flask_mail import send_email
 from werkzeug.urls import url_parse
 from werkzeug import secure_filename
 from app import app, db,bootstrap
-from app.forms import LoginForm, RegistrationForm,EditProfileForm
+from app.forms import LoginForm, RegistrationForm,EditProfileForm,EditProfileAdminForm
 from app.models import User,Role,Album,Photo,Post
 from app import tools
 from sqlalchemy import func
@@ -71,6 +71,7 @@ def sketch2image(photoid):
 @app.route('/teacher',methods=['GET','POST'])
 @login_required
 def teacher():
+    print("into the teacher")
     if request.method == 'POST' and json.loads(request.get_data()):
         #print("get the file?")
         data = json.loads(request.get_data())
@@ -124,7 +125,7 @@ def select_model():
             #print(album)
         student_model = model
         print("select_model,student_model is "+ student_model)
-        teacher_user_id = 1
+        teacher_user_id = 3
         print(teacher_user_id)
         #if there is not the album
         album = Album.query.filter_by(title=student_model,author_id=teacher_user_id).first() #get the album,
@@ -229,7 +230,8 @@ def register():
     if form.validate_on_submit():
         user = User(email=form.email.data,
                     username=form.username.data,
-                    password=form.password.data)
+                    password=form.password.data,
+                    )
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()
@@ -294,3 +296,28 @@ def edit_profile():
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', form=form)
 
+@app.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_profile_admin(id):
+    user = User.query.get_or_404(id)
+    form = EditProfileAdminForm(user=user)
+    if form.validate_on_submit():
+        user.email = form.email.data
+        user.username = form.username.data
+        user.confirmed = form.confirmed.data
+        user.role = Role.query.get(form.role.data)
+        user.name = form.name.data
+        user.location = form.location.data
+        user.about_me = form.about_me.data
+        db.session.add(user)
+        flash('The profile has been updated.')
+        return redirect(url_for('.user', username=user.username))
+    form.email.data = user.email
+    form.username.data = user.username
+    form.confirmed.data = user.confirmed
+    form.role.data = user.role_id
+    form.name.data = user.name
+    form.location.data = user.location
+    form.about_me.data = user.about_me
+    return render_template('edit_profile.html', form=form, user=user)

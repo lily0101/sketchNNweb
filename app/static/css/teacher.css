@@ -4,20 +4,19 @@
 #yellow{background:yellow; width:30px;height: 27px}
 #white{background:black; width:30px;height: 27px}
 #zi{background:#8B026B; width:30px;height: 27px}
-.container{
-    width :800px;
-    height :800px;
-    padding-top: 20px;
-    padding-bottom:10px
+body{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.42857143;
+    color: antiquewhite;
+    background-color: antiquewhite;
 }
 #container{
-    width :800px;
-    height :800px;
     padding-top: 20px;
     padding-bottom:10px;
     margin: 0px auto;
     text-align: center;
-
 }
 #canvas{
     padding: 0;

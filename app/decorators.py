@@ -16,4 +16,4 @@ def permission_required(permissions):
 
 # 调用上面装饰器函数
 def admin_required(f):
-    return permission_required(Permission.ADMINISTRATOR)(f)     # 带参数，且传递函数
+    return permission_required(Permission.ADMINISTER)(f)    # 带参数，且传递函数
