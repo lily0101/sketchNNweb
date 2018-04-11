@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}SketchDrawing- Register{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Register</h1>
+</div>
+    <div>
+    <p>New Student? <a href="{{ url_for('auth.register_student') }}">Student!</a></p>
+    <p>New Teacher? <a href="{{ url_for('auth.register_teacher') }}">Teacher!</a></p>
+    <p>Others? <a href="{{ url_for('auth.register_others') }}">Others!</a></p>
+    </div>
+{% endblock %}
+

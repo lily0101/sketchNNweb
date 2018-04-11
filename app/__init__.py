@@ -1,21 +1,39 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from config import Config
-from flask_bootstrap import  Bootstrap
+from flask_bootstrap import Bootstrap
 from flask_mail import Mail
-from flask import Blueprint
 from flask_moment import Moment
-app = Flask(__name__)
-moment = Moment(app)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-bootstrap = Bootstrap(app)
-login = LoginManager(app)
-login.login_view = 'login'
-login.session_protection = 'strong'
-mail = Mail(app)
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_pagedown import PageDown
+from config import config
 
-from app import routes, models, email
+bootstrap = Bootstrap()
+mail = Mail()
+moment = Moment()
+db = SQLAlchemy()
+pagedown = PageDown()
+
+login_manager = LoginManager()
+login_manager.session_protection = 'strong'
+login_manager.login_view = 'auth.login'
+
+
+def create_app(config_name):
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+
+    bootstrap.init_app(app)
+    mail.init_app(app)
+    moment.init_app(app)
+    db.init_app(app)
+    login_manager.init_app(app)
+    pagedown.init_app(app)
+
+    from .main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
+
+    from .auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
+
+    return app

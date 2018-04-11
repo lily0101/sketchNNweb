@@ -1,5 +1,6 @@
 from datetime import datetime
-from app import db, login
+from . import db, login_manager
+
 import hashlib
 from flask import current_app,request
 from flask_login import UserMixin,AnonymousUserMixin
@@ -24,10 +25,12 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User':(Permission.FOLLOW|Permission.COMMENT|
-                     Permission.WRITE_ARTICLES, True),     # 只有普通用户的default为True
-            'Moderare':(Permission.FOLLOW|Permission.COMMENT|
+            'Student':(Permission.FOLLOW|Permission.COMMENT|
+                     Permission.WRITE_ARTICLES, False),     # 只有普通用户的default为True
+            'Teacher':(Permission.FOLLOW|Permission.COMMENT|
                     Permission.WRITE_ARTICLES|Permission.MODERATE_COMMENTS, False),
+            'Moderare':(Permission.FOLLOW|Permission.COMMENT|
+                    Permission.WRITE_ARTICLES|Permission.MODERATE_COMMENTS, True),
             'Administrator':(0xff, False)
         }
         for r in roles:
@@ -41,6 +44,12 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role %r>' %self.name
+
+class Follow(db.Model):
+    __tablename__ = "follows"
+    follower_id = db.Column(db.Integer,db.ForeignKey('users.id'),primary_key=True)
+    followed_id = db.Column(db.Integer,db.ForeignKey('users.id'),primary_key=True)
+    timestamp = db.Column(db.DateTime,default=datetime.utcnow())
 
 class User(UserMixin, db.Model):
     __tablename__ ="users"
@@ -61,6 +70,19 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+
+    #follow
+    followed = db.relationship('Follow',
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower',lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all,delete-orphan')
+
+    followers = db.relationship('Follow',
+                               foreign_keys=[Follow.followed_id],
+                               backref=db.backref('followed', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all,delete-orphan')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -154,8 +176,28 @@ class User(UserMixin, db.Model):
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
 
+
+    def follow(self, user):
+        if not self.is_following(user):
+            f = Follow(followed=user)
+            self.followed.append(f)
+
+    def unfollow(self, user):
+        f = self.followed.filter_by(followed_id=user.id).first()
+        if f:
+            self.followed.remove(f)
+
+    def is_following(self, user):
+        return self.followed.filter_by(
+            followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        return self.followers.filter_by(
+            follower_id=user.id).first() is not None
+
     def __repr__(self):
         return '<User %r>' % self.username
+
 
 
 class AnonymousUser(AnonymousUserMixin):
@@ -165,7 +207,7 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
-login.anonymous_user = AnonymousUser
+login_manager.anonymous_user = AnonymousUser
 
 
 
@@ -195,7 +237,7 @@ class Photo(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     album_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
 
-@login.user_loader
+@login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
 

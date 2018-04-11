@@ -1,7 +1,6 @@
 from skimage.feature import match_template
 import matplotlib as plt
 import matplotlib.image as mpimg
-from app import db, login
 import numpy as np
 import sys,os
 import caffe
