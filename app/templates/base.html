@@ -52,7 +52,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         {% if current_user.is_administrator() %}
-                            <li><a href="{{ url_for('main.history') }}">History</a></li>
+                            <li><a href="{{ url_for('admin.index') }}">Admin</a></li>
                         {% else %}
                             <li><a href="{{ url_for('main.history') }}">History</a></li>
                             <li><a href="{{ url_for('main.edit_profile') }}">Profile</a></li>

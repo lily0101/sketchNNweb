@@ -1,6 +1,5 @@
 from datetime import datetime
 from . import db, login_manager
-
 import hashlib
 from flask import current_app,request
 from flask_login import UserMixin,AnonymousUserMixin
