@@ -1,5 +1,6 @@
 # Windows image file caches
 app.db
+data-dev.sqlite
 
 # Folder config file
 Desktop.ini

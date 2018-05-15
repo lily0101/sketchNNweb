@@ -1,6 +1,229 @@
 {% extends 'admin/master.html' %}
 
+{% block head %}
+{{ super() }}
+    <meta charset="utf-8">
+    <!-- 引入 ECharts 文件 -->
+    <script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/echarts.js') }}"></script>
+{% endblock %}
+
 {% block body %}
-    <p>Hello,{{ current_user.username }},Welcome!</p>
-    <p>Please be careful with any delete!You can not get back if you delete that!</p>
+    <div id="barMain" style="height:400px"></div>
+    <div id="lineMain" style="height:400px"></div>
+<!-- ECharts单文件引入 -->
+<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: 'http://echarts.baidu.com/build/dist'
+        }
+    });
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line'
+        ],
+        drawEcharts
+    );
+
+    function drawEcharts(ec){
+        drawBar(ec);
+        drawLine(ec);
+    }
+    function drawBar(ec){
+        var myBarChart = ec.init(document.getElementById('barMain'));
+        // Generate data
+        var category = [];
+        var dottedBase = +new Date();
+        var lineData = [];
+        var barData = [];
+
+        for (var i = 0; i < 20; i++) {
+            var date = new Date(dottedBase += 3600 * 24 * 1000);
+            category.push([
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate()
+            ].join('-'));
+            var b = Math.random() * 200;
+            var d = Math.random() * 200;
+            barData.push(b)
+            lineData.push(d + b);
+        }
+
+
+        // option
+        option = {
+            backgroundColor: '#0f375f',
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['line', 'bar'],
+                textStyle: {
+                    color: '#ccc'
+                }
+            },
+            xAxis: {
+                data: category,
+                axisLine: {
+                    lineStyle: {
+                        color: '#ccc'
+                    }
+                }
+            },
+            yAxis: {
+                splitLine: {show: false},
+                axisLine: {
+                    lineStyle: {
+                        color: '#ccc'
+                    }
+                }
+            },
+            series: [{
+                name: 'line',
+                type: 'line',
+                smooth: true,
+                showAllSymbol: true,
+                symbol: 'emptyCircle',
+                symbolSize: 15,
+                data: lineData
+            }, {
+                name: 'bar',
+                type: 'bar',
+                barWidth: 10,
+                itemStyle: {
+                    normal: {
+                        barBorderRadius: 5,
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#14c8d4'},
+                                {offset: 1, color: '#43eec6'}
+                            ]
+                        )
+                    }
+                },
+                data: barData
+            }, {
+                name: 'line',
+                type: 'bar',
+                barGap: '-100%',
+                barWidth: 10,
+                itemStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: 'rgba(20,200,212,0.5)'},
+                                {offset: 0.2, color: 'rgba(20,200,212,0.2)'},
+                                {offset: 1, color: 'rgba(20,200,212,0)'}
+                            ]
+                        )
+                    }
+                },
+                z: -12,
+                data: lineData
+            }, {
+                name: 'dotted',
+                type: 'pictorialBar',
+                symbol: 'rect',
+                itemStyle: {
+                    normal: {
+                        color: '#0f375f'
+                    }
+                },
+                symbolRepeat: true,
+                symbolSize: [12, 4],
+                symbolMargin: 1,
+                z: -10,
+                data: lineData
+            }]
+        };
+        myBarChart.setOption(option); //当setOption第二个参数为true时，会阻止数据合并
+    }
+
+
+    function drawLine(ec){
+        var myLineChart = ec.init(document.getElementById('lineMain'));
+        var option2 = {
+            title : {
+                text: 'the number of users and drawing',
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['top','down']
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : false,
+                    data : ['first month','second month','third month','forth month','fifth month','sixth month','seventh month']
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    axisLabel : {
+                        formatter: '{value}'
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'top',
+                    type:'line',
+                    data:[11, 11, 15, 13, 12, 13, 10],
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: 'max value'},
+                            {type : 'min', name: 'min value'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: 'average'}
+                        ]
+                    }
+                },
+                {
+                    name:'down',
+                    type:'line',
+                    data:[1, -2, 2, 5, 3, 2, 0],
+                    markPoint : {
+                        data : [
+                            {name : 'min', value : -2, xAxis: 1, yAxis: -1.5}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name : 'average'}
+                        ]
+                    }
+                }
+            ]
+        };
+        myLineChart.setOption(option2,true);
+    }
+    </script>
 {% endblock %}

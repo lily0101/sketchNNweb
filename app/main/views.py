@@ -213,7 +213,27 @@ def edit_profile():
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', form=form)
 
+@main.route('/showChart', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def showChart():
+    if request.method == "GET":
+        res = []
+        user1 = len(User.query.all())
+        temp = ["user",user1]
+        res.append(temp)
+        role1 = len(Role.query.all())
+        temp = ["role", role1]
+        res.append(temp)
+        album1 = len(Album.query.all())
+        temp = ["album", album1]
+        res.append(temp)
+        photo1 = len(Photo.query.all())
+        temp = ["photo", photo1]
+        res.append(temp)
 
+    return jsonify(user=[x[0] for x in res],
+                   amount=[x[1] for x in res])
 @main.route('/edit_profile/<int:id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
