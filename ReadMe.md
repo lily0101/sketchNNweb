@@ -14,8 +14,8 @@ when you finished the installing, you can create new environment and activate th
 2. Install Extensions and Plugins
 
 **Notice: you have to activate the envs firstly.**
-```
 in Linux,OS X, it's below:
+```
 - $ flask/bin/pip install flask
 - $ flask/bin/pip install flask-login
 - $ flask/bin/pip install flask-openid
