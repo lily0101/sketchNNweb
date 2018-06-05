@@ -12,9 +12,10 @@ you can install the anaconda3 following [this](https://conda.io/docs/installatio
 when you finished the installing, you can create new environment and activate the envs by those [commends](https://conda.io/docs/user-guide/tasks/manage-environments.html)
 
 2. Install Extensions and Plugins
+
 **Notice: you have to activate the envs firstly.**
-'''
 in Linux,OS X, it's below:
+```
 - $ flask/bin/pip install flask
 - $ flask/bin/pip install flask-login
 - $ flask/bin/pip install flask-openid
@@ -27,26 +28,32 @@ in Linux,OS X, it's below:
 - $ flask/bin/pip install guess_language
 - $ flask/bin/pip install flipflop
 - $ flask/bin/pip install coverage
-'''
+```
 
 3.Create your own database locally
-'''
+
+```
 python manage.py db init
 python manage.py db migrate -m "initial migration"
-'''
+```
+
 when you change the model, you can use the following commend to upgrade the change.
-'''
+
+```
 python manage.py db upgrade
-'''
-when you want to delete the change, you can use '''python manage.py db downgrade''' to withdraw the change.
+```
+ 
+when you want to delete the change, you can use ``` python manage.py db downgrade```  to withdraw the change.
 
 
 ## Run
 when you finished the above steps, you can run this web system locally.
-'''
+
+```
 python manage.py runserver
-'''
-then, you can open the link:** http://127.0.0.1:5000/**  to check that.
+```
+
+then, you can open the link: ** http://127.0.0.1:5000/ **  to check that.
 
 
 ## License
