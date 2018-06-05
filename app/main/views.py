@@ -64,6 +64,45 @@ def sketch2image(photoid):
 
     return render_template("sketch2image.html", top5_images=top5)
 
+@main.route('/teacher_mimic', methods=['GET', 'POST'])
+@login_required
+def teacher_mimic():
+    print("into the teacher-mimic")
+    if request.method == 'POST' and json.loads(request.get_data()):
+        # print("get the file?")
+        data = json.loads(request.get_data())
+        teacher_model = data["model"]
+        print(data)
+        author = current_user._get_current_object()
+        # 只能通过model来选择，不能同时判断两个条件吗？主要是author是不能用在查找的，只能用来关联
+        print("in teacher, the select_model is:" + teacher_model)
+        album = Album.query.filter_by(title=teacher_model, author_id=author.id).first()  # get the album
+        print(album)  # find the selected album
+        if album:
+            pass
+        else:  # create the new album
+            album = Album(title=teacher_model, author=author)
+            db.session.add(album)
+            db.session.commit()
+            # print(album)#create new album
+        amount = len(album.photos.all())
+        strokes = data["strokes"]
+        # use the use name to identify the files
+        filename = os.path.join(UPLOAD_FOLDER, 'teacher', author.username,
+                                teacher_model);  # change the data['name'] to teacher_model, you dont need to write down the name
+        if not os.path.exists(filename):
+            os.makedirs(filename)
+        url = os.path.join(filename, str(amount) + '.npy')
+        np.save(url, strokes)
+        # just save the url in local file
+        photo = Photo(url=url,
+                      album=album, author_id=current_user._get_current_object().id)
+        print(photo)
+        db.session.add(photo)
+        db.session.commit()
+        return jsonify("save to disk is success!")
+        # return redirect(url_for('teacher'))#重定向到这个url
+    return render_template('myMimic.html')
 
 @main.route('/teacher', methods=['GET', 'POST'])
 @login_required
@@ -186,7 +225,7 @@ def student():
         # score = tools.templateMatch(images) #it's templateMatch
         # print(score)
         # use the CNN+LSTM
-        score = tools.sketchClassifier(images[1])  # the first of the return score is the prob of the class so slowly
+        score = tools.sketchClassifier(images[1],student_model)  # the first of the return score is the prob of the class so slowly
 
         photo = Photo(url=images[1], score=score,
                       album=album, author=user)

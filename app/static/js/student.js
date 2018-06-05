@@ -132,7 +132,7 @@ var teach = function(p){
     insize_x = screen_width+10;
     insize_y = screen_height+100;
     //only this button
-    teach_button = p.createButton("学一学");
+    teach_button = p.createButton("learn drawing");
     teach_button.parent("button");
     teach_button.style("margin","5px");
     teach_button.mousePressed(teach_button_event);
@@ -215,12 +215,12 @@ var teach = function(p){
     if(fps_number == example.length){  //>= and == is equal，show some message
       //show some tips,such as "do you know how to draw? just try it by yourself"
       //alert("do you know how to draw? just try it by yourself!");
-        tips = "学会了吗？1.you can click the draw to start your sketch drawing  " +
+        tips = "Do you learn that？1.you can click the draw to start your sketch drawing  " +
             "2. when you forget, you can click generate,let the machine to finish your drawing!";
         $.cxDialog({
-          title:'结束教学',
+          title:'finished',
           info :tips,
-          okText:"好",
+          okText:"ok",
           ok:function(){
               learn_gate = true;
           },
@@ -296,12 +296,12 @@ var sketch = function(p){
     size_sel.changed(select_size_event);
     // dom
     //画一画
-    draw_button = p.createButton('画一画');
+    draw_button = p.createButton('drawing');
     draw_button.parent("button");
     draw_button.style("margin","5px");
     draw_button.mousePressed(draw_button_event); // attach button listener
    //提交
-    submit_button = p.createButton("提交");
+    submit_button = p.createButton("submit");
     submit_button.parent("button");
     submit_button.style("margin","5px");
     submit_button.mousePressed(submit_button_event);
@@ -673,9 +673,9 @@ function ShowScore(score){
 var showTips=function(tip){
   console.log(tip)
   $.cxDialog({
-      title:'提示',
+      title:'Tips',
       info :tip,
-      okText:"好",
+      okText:"Ok",
       ok:function(){
         timeStart = Date.parse(new Date());
       },

@@ -36,7 +36,7 @@
                 {% if not current_user.can(Permission.MODERATE_COMMENTS) %}
                      <li><a href="{{ url_for('main.student') }}">SketchDrawing</a></li>
                 {% else %}
-                    <li><a href="{{ url_for('main.teacher') }}">SketchDrawing</a></li>
+                    <li><a href="{{ url_for('main.teacher_mimic') }}">SketchDrawing</a></li>
                 {% endif %}
                 {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('main.user', username=current_user.username) }}">Profile</a></li>

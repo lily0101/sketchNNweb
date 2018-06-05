@@ -12,7 +12,7 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, '/static/data')
 caffe_root = APP_ROOT
 
-def sketchClassifier(url):
+def sketchClassifier(url,model_name):
     net_file = caffe_root + '/SketchModel/classifier/deploy.prototxt'
     caffe_model = caffe_root + '/SketchModel/classifier/caffe_alexnet_train_sketch_57_43_3_iter_10500.caffemodel'
     mean_file = caffe_root + '/SketchModel/classifier/ilsvrc_2012_mean.npy'
@@ -34,10 +34,19 @@ def sketchClassifier(url):
     top_k = net.blobs['prob'].data[0].flatten().argsort()[-1:-6:-1]
     score = net.blobs['prob'].data[0].flatten()
     print("before is",top_k)
-    print("the result is {0}:".format(score))
     for i in np.arange(top_k.size):
         print(top_k[i], labels[top_k[i]], score[top_k[i]])
-    return np.float64(score[top_k[0]])
+    print(model_name)
+    print(labels[top_k[0]].split(' ')[1])
+    print(model_name == labels[top_k[0]])
+    if model_name == labels[top_k[0]]:
+        if score[top_k[0]] > 0.3:
+            return np.float64(0.8)
+        else:
+            return np.float64(0.6)
+    else:
+        return np.float64(0.5)
+
 
 def allowed_file(filename):
     return '.' in filename and \
