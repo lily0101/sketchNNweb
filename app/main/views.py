@@ -225,9 +225,9 @@ def student():
         # score = tools.templateMatch(images) #it's templateMatch
         # print(score)
         # use the CNN+LSTM
-        score = tools.sketchClassifier(images[1],student_model)  # the first of the return score is the prob of the class so slowly
+        score = tools.sketchClassifier(images[0],student_model)  # the first of the return score is the prob of the class so slowly
 
-        photo = Photo(url=images[1], score=score,
+        photo = Photo(url=images[0], score=score,
                       album=album, author=user)
         db.session.add(photo)
         db.session.commit()

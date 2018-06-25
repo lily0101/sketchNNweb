@@ -4,6 +4,7 @@ import matplotlib.image as mpimg
 import numpy as np
 import sys,os
 import caffe
+import cv2
 from sklearn.neighbors import NearestNeighbors, LSHForest
 import tensorflow as tf
 
@@ -24,6 +25,7 @@ def sketchClassifier(url,model_name):
     transformer.set_raw_scale('data', 255)
     transformer.set_channel_swap('data', (2, 1, 0))
 
+    #url = cv2.imread(url,0)
     im = caffe.io.load_image(url)
     net.blobs['data'].data[...] = transformer.preprocess('data', im)
     out = net.forward()
@@ -38,8 +40,10 @@ def sketchClassifier(url,model_name):
         print(top_k[i], labels[top_k[i]], score[top_k[i]])
     print(model_name)
     print(labels[top_k[0]].split(' ')[1])
-    print(model_name == labels[top_k[0]])
-    if model_name == labels[top_k[0]]:
+    model_name = str(model_name)
+    predict = str(labels[top_k[0]].split(' ')[1])
+    print(model_name == predict)
+    if model_name == predict:
         if score[top_k[0]] > 0.3:
             return np.float64(0.8)
         else:
@@ -47,6 +51,15 @@ def sketchClassifier(url,model_name):
     else:
         return np.float64(0.5)
 
+def compute_map(images,model_name):
+    """compute the map in multi-classification"""
+    all = len(images)
+    right = 0
+    for image in images:
+        result = sketchClassifier(image,model_name)
+        if result > 0.5:
+            right = right+1
+    print("the map value is: %.lf%%"%(right/all))
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -60,7 +73,6 @@ def templateMatch(urls):
 
 def SketchToImage(image):
     '''
-
     :param image:
     :return: the retrivel images url in disk, because you have to show that in html
     '''

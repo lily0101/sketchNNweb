@@ -12,8 +12,12 @@
 {% block page_content %}
     <div>
         {% for url in all_url %}
-            <a href="/sketch2image/{{ url[1].id }}"><img id = "image_{{ url[0] }}" src="{{url[0]}}" alt = "history!" title="{{url[1].score}}" )> </a>
+            {% if url[1].score < 0.5 %}
+              <a href="/sketch2image/{{ url[1].id }}"><img id = "image_{{ url[0] }}" src="{{url[0]}}" alt = "history!" title="Sorry! You have to come on!" )> </a>
+            {% else  %}
+              <a href="/sketch2image/{{ url[1].id }}"><img id = "image_{{ url[0] }}" src="{{url[0]}}" alt = "history!" title="Wow! You are great!" )> </a>
         <!--when you move your mouse to the picture,the score will show-->
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
