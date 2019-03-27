@@ -51,10 +51,10 @@ var gen = false;
 var gen_button;
 var predict_line_color;
 
-var scoreMessage = ["小朋友，还需继续努力哦！！",
-model_selected + "画的还不错呢！已经超过了60%的小伙伴了哦！",
-model_selected + " is right!你真棒！你的绘画能力很不错哦！",
-model_selected+" perfect! 你已经完全掌握了绘画技能哦！"
+var scoreMessage = [",it's your drawing score right now,but your drawing does't seem like it,you need pay more attention it！",
+",it's your drawing score right now,your drawing can be thought to be the it,if you come on, you can get better!",
+",it's your drawing score right now,great!your drawing has better than 80% sketch！You can pay more attention in the details!",
+",it's your drawing score right now,perfect! your sketch drawing is right! You can try another category sketch!"
 ]
 // variables we need for this demo
 //student's start
@@ -434,6 +434,8 @@ var sketch = function(p){
     pen = 0;
     learn_gate = false;
     //submit two images to back
+    wait_messege="please wait a second, the AI teacher is scoring your drawing"
+    showTips(wait_messege)
     ajaxSubmit();
 
   };
@@ -688,10 +690,10 @@ function ShowScore(score){
   console.log(score);
   //biggest score is 1, the smallest is 0
   switch(true){
-    case score >= 0 && score < 6: showTips(scoreMessage[0]);break;
-    case score >= 6 && score < 8:showTips(scoreMessage[1]);break;
-    case score >= 8:showTips(scoreMessage[2]);break;
-    default:showTips("wrong score!!");
+    case score >= 0 && score < 6: showTips(score*10+scoreMessage[2]);break;
+    case score >= 6 && score < 8:showTips(score*10+scoreMessage[1]);break;
+    case score >= 8:showTips(score*10+scoreMessage[2]);break;
+    default:showTips("ohh.....Sorry! System wrong!please try again!");
   }
 };
 

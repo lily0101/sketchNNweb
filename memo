@@ -1,13 +1,16 @@
 1.in root environment,you can use tensorflow-gpu-1.2.0 & opencv & python3.6 
 2.in envs python2 ,you can use tensorflow-gpu-1.2.0&opencv& python2.7 
 when the backend is not tensorflow ,you can use command "KERAS_BACKEND=tensorflow" to change that before you run your file
+
+
+
 3.source activate magenta-gpu ,you can use magenta
 
 for my deliberation sketch rnn :
-python train.py --log_root=./checkpoint/ --data_dir=/home/chenxingli/graduation_project/dataset/sketch-rnn-datasets/aaron_sheep/ --hparams="data_set=[aaron_sheep.npz]"
+python train_v4.py --log_root=./checkpoint_v4/ --data_dir=/data/chenxingli/dataset/sketchGoogle/aaron_sheep/ --hparams="data_set=[aaron_sheep.npz]"
 
 for google sketch rnn:
-python sketch_rnn_train.py --log_root=./checkpoint/ --data_dir=/home/chenxingli/graduation_project/dataset/sketch-rnn-datasets/aaron_sheep/ --hparams="data_set=[aaron_sheep.npz]"
+python sketch_rnn_train.py --log_root=./checkpoint/ --data_dir=/data/chenxingli/dataset/sketchGoogle/aaron_sheep/ --hparams="data_set=[aaron_sheep.npz]"
 
 4.sudo su and caffe must cd into the directory /home/chenxingli/caffe/caffe/python and run python or ipython, then you can use import caffe in your file in before directory.
 myclassify.py is for sketch png. 
@@ -19,6 +22,7 @@ myclassify.py is for sketch png.
 7.in caffe-tf envs, you can use 
 export FLASK_APP=run.py
 flask run
+!!!!!you can also use the command: python manage.py runserver
 to start the web system.
 For a new database
 1.flask db init
@@ -41,6 +45,7 @@ git push origin v1.0
 git tag -d v1.0(delete)
 git push origin :v1.0
 
+
 delete files:
 git rm -f --cached files
 git commit -m "delete"
@@ -59,3 +64,37 @@ check port:
 netstat -apn | grep 5001
 kill -9 port
 
+check gpu
+nvidia-smi
+export CUDA_VISIBLE_DEVICES=1
+ls -l /proc/PID/exe
+sudo kill -s 9 26620
+
+1. python ./tools/convertToJpg.py
+2. python ./tools/xmlEqualImg.py
+3. python ./tools/rename.py
+4. python ./tools/dealData.py
+
+new version:
+1. python ./tools/rename.py
+2. python ./tools/xmlEqualImg.py
+3. python ./tools/dealData.py
+
+
+my-tf-faster-RCNN:
+soure activate python2
+./experiments/scripts/test_faster_rcnn.sh 0 pascal_voc vgg16
+python ./tools/demo.py --net=vgg16 --dataset=pascal_voc
+
+#retrain the model for pb file and the before is in simple version
+
+#
+killall -u chenxingli
+
+tmux
+tmux new -s myname
+tmux a -t webserver
+ctrl+b is the prefix.
+在Tmux Session中，通过<prefix>$可以重命名当前Session。其中<prefix>指的是tmux的前缀键，所有tmux快捷键都需要先按前缀键。它的默认值是Ctrl+b。
+
+<prefix>c可以创建新的窗口（Window），<prefix>%水平分割窗口（形成两个Pane），<prefix>"垂直分割窗口。退出当前Session的快捷键是<prefix>d

@@ -12,7 +12,7 @@ import numpy as np
 import random
 from werkzeug import secure_filename
 
-APP_ROOT = '/home/chenxingli/graduation_project/webserver/sketchNNweb/app'
+APP_ROOT = '/home/chenxingli/graduation_project/sketchNNweb/app'
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static/data')
 
 @main.route('/')

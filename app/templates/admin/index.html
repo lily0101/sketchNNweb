@@ -31,12 +31,10 @@
     );
 
     function drawEcharts(ec){
-        drawBar(ec);
         drawLine(ec);
+        drawBar(ec);
     }
-    function drawBar(ec){
-        var myBarChart = ec.init(document.getElementById('barMain'));
-        // Generate data
+     // Generate data
         var category = [];
         var dottedBase = +new Date();
         var lineData = [];
@@ -49,16 +47,20 @@
                 date.getMonth(),
                 date.getDate()
             ].join('-'));
-            var b = Math.random() * 200;
-            var d = Math.random() * 200;
+            var b = Math.random() * 50;
+            var d = Math.random() * 50;
             barData.push(b)
             lineData.push(d + b);
         }
-
+    function drawBar(ec){
+        var myBarChart = ec.init(document.getElementById('barMain'));
 
         // option
         option = {
-            backgroundColor: '#0f375f',
+            title : {
+                text: 'The Number Of Sketch Drawing',
+            },
+            backgroundColor: '#ccc',
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
@@ -66,16 +68,24 @@
                 }
             },
             legend: {
-                data: ['line', 'bar'],
-                textStyle: {
-                    color: '#ccc'
+                data: ['line', 'bar']
+            },
+             toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
                 }
             },
+            calculable : true,
             xAxis: {
                 data: category,
                 axisLine: {
                     lineStyle: {
-                        color: '#ccc'
+                        color: '#000'
                     }
                 }
             },
@@ -83,7 +93,7 @@
                 splitLine: {show: false},
                 axisLine: {
                     lineStyle: {
-                        color: '#ccc'
+                        color: '#000'
                     }
                 }
             },
@@ -155,10 +165,14 @@
         var myLineChart = ec.init(document.getElementById('lineMain'));
         var option2 = {
             title : {
-                text: 'the number of users and drawing',
+                text: 'The Number Of Users',
             },
+            backgroundColor: '#cff',
             tooltip : {
-                trigger: 'axis'
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
             },
             legend: {
                 data:['top','down']
@@ -178,7 +192,7 @@
                 {
                     type : 'category',
                     boundaryGap : false,
-                    data : ['first month','second month','third month','forth month','fifth month','sixth month','seventh month']
+                    data : ['2018-10-21','2018-10-24','2018-10-27','2018-10-30','2018-11-3','2018-11-6','2018-11-9']
                 }
             ],
             yAxis : [
@@ -209,10 +223,10 @@
                 {
                     name:'down',
                     type:'line',
-                    data:[1, -2, 2, 5, 3, 2, 0],
+                    data:[1, 0, 2, 5, 3, 2, 0],
                     markPoint : {
                         data : [
-                            {name : 'min', value : -2, xAxis: 1, yAxis: -1.5}
+                            {name : 'min', value : 0, xAxis: 1, yAxis: -1.5}
                         ]
                     },
                     markLine : {

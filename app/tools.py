@@ -38,6 +38,14 @@ def sketchClassifier(url,model_name):
     print("before is",top_k)
     for i in np.arange(top_k.size):
         print(top_k[i], labels[top_k[i]], score[top_k[i]])
+        predict = str(labels[top_k[i]].split(' ')[1])
+        if predict == model_name:
+            if score[top_k[i]] > 0.3:
+                return np.float64(0.8)
+            else:
+                return np.float64(0.6)
+    return np.float64(0.5)
+    '''
     print(model_name)
     print(labels[top_k[0]].split(' ')[1])
     model_name = str(model_name)
@@ -50,6 +58,7 @@ def sketchClassifier(url,model_name):
             return np.float64(0.6)
     else:
         return np.float64(0.5)
+    '''
 
 def compute_map(images,model_name):
     """compute the map in multi-classification"""

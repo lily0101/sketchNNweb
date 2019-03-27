@@ -32,12 +32,13 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     pagedown.init_app(app)
+    admin.init_app(app)
 
     #admin
+
     from .modelView import BaseMView,UModelview,AlbumVModel,RoleModelview
     from .models import Role,User,Album,Photo
     from flask_admin.contrib.fileadmin import FileAdmin
-    admin.init_app(app)
 
     admin.add_view(UModelview(User, db.session, category="User&&Role",name="Manage User"))
     admin.add_view(RoleModelview(Role, db.session, category="User&&Role",name="Manage Role"))
