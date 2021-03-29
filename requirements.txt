@@ -77,7 +77,7 @@ protobuf==3.4.1
 psutil==5.4.3
 ptyprocess==0.5.2
 pycparser==2.18
-Pygments==2.2.0
+Pygments==2.7.4
 pygpu==0.7.6
 pyparsing==2.2.0
 python-dateutil==2.6.1
