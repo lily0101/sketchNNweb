@@ -62,7 +62,7 @@ matplotlib==2.1.2
 mimerender==0.6.0
 msgpack-python==0.5.5
 networkx==2.1
-numpy==1.14.1
+numpy==1.22.0
 olefile==0.45.1
 packaging==16.8
 pandas==0.22.0
