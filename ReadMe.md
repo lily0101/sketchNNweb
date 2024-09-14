@@ -42,7 +42,7 @@ when you change the model, you can use the following commend to upgrade the chan
 ```
 python manage.py db upgrade
 ```
- 
+
 when you want to delete the change, you can use ``` python manage.py db downgrade```  to withdraw the change.
 
 
@@ -58,3 +58,4 @@ then, you can open the link: ** http://127.0.0.1:5000/ **  to check that.
 
 ## License
 This demo application is my own test.if you want to do something about this,please contact me (chenlily0101@gmail.com).
+Test account
