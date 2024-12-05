@@ -50,7 +50,7 @@ ipython==6.2.1
 ipython-genutils==0.2.0
 itsdangerous==0.24
 jedi==0.11.1
-Jinja2==2.10
+Jinja2==2.11.3
 Keras==2.1.5
 leveldb==0.20
 locket==0.2.0
