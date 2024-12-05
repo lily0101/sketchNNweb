@@ -1,7 +1,7 @@
 alembic==0.9.8
 awesome-slugify==1.6.5
 Babel==2.5.3
-bleach==1.5.0
+bleach==3.3.0
 blinker==1.4
 bokeh==0.12.14
 cairocffi==0.7.2
